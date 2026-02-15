@@ -6,6 +6,10 @@ import Favorites from './pages/Favorites';
 import { searchMovies } from './services/movieService';
 import './App.css';
 
+import { MovieProvider } from './contexts/MovieContext';
+import Watchlist from './pages/WatchList';
+
+
 function App() {
   const [movies, setMovies] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
@@ -43,6 +47,7 @@ function App() {
   };
 
   return (
+    <MovieProvider>
     <Router>
       <div className="app">
         <Header onSearch={handleSearch} onClearSearch={handleClearSearch} />
@@ -60,9 +65,11 @@ function App() {
             }
           />
           <Route path="/favorites" element={<Favorites />} />
+          <Route path="/watchlist" element={<Watchlist />} />
         </Routes>
       </div>
     </Router>
+    </MovieProvider>
   );
 };
 

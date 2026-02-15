@@ -1,9 +1,14 @@
 import { useEffect, useState } from 'react';
+import { useMovieContext } from '../contexts/MovieContext';
+
 
 const FAVORITES_KEY = 'favoriteMovies';
 
 function MovieCard({ movie, onFavoritesChange }) {
   const [favorited, setFavorited] = useState(false);
+  const { addToWatchlist, removeFromWatchlist, isInWatchlist } = useMovieContext();
+  const inWatchlist = isInWatchlist(movie.id);
+
 
   useEffect(() => {
     const favorites = JSON.parse(localStorage.getItem(FAVORITES_KEY)) || [];
@@ -29,6 +34,15 @@ function MovieCard({ movie, onFavoritesChange }) {
       onFavoritesChange(updatedFavorites);
     }
   };
+
+  const handleToggleWatchlist = () => {
+  if (inWatchlist) {
+    removeFromWatchlist(movie.id);
+  } else {
+    addToWatchlist(movie);
+  }
+};
+
   
 const posterUrl = movie.poster_path
     ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
@@ -49,12 +63,20 @@ const releaseYear = movie.release_date ? movie.release_date.substring(0, 4) : 'N
           <span className="movie-rating">⭐ {movie.vote_average}</span>
           <span className="movie-year">{releaseYear}</span>
         </div>
+        <div className="movie-actions">
         <button
           className={`favorite-button ${favorited ? 'favorited' : ''}`}
           onClick={handleToggleFavorite}
         >
           {favorited ? '♥ Remove Favorite' : '♡ Add to Favorites'}
         </button>
+        <button
+         className={`watchlist-button ${inWatchlist ? 'added' : ''}`}
+         onClick={handleToggleWatchlist}
+        >
+          {inWatchlist ? 'x Remove from Watchlist' : '+ Add to Watchlist'}
+        </button> 
+        </div>
       </div>
     </div>
   );
